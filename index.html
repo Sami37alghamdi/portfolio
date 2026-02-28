@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>سامي الغامدي - محفظة انجاز</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Shared Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        light: { main: '#ffffff', surface: '#f8fafc', text: '#1e293b' },
+                        dark: { main: '#0f172a', surface: '#1e293b', text: '#f8fafc' },
+                        brand: { lightPrimary: '#0f766e', darkPrimary: '#2dd4bf', secondary: '#fbbf24' }
+                    },
+                    boxShadow: { 'glass': '0 4px 30px rgba(0, 0, 0, 0.1)' }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body id="page-home"
+    class="bg-light-main dark:bg-dark-main text-light-text dark:text-dark-text font-sans antialiased transition-colors duration-300 math-bg min-h-screen flex flex-col disable-tap-highlight">
+
+    <!-- Sticky Top Header (Icons Only) -->
+    <header
+        class="fixed top-0 left-0 right-0 z-50 glassmorphism px-4 py-3 flex justify-between items-center w-full max-w-3xl mx-auto rounded-b-3xl">
+        <div class="flex flex-col items-start leading-tight">
+            <span class="text-lg font-extrabold text-slate-800 dark:text-white"
+                style="font-family:'Tajawal',sans-serif">سامي الغامدي</span>
+            <span class="text-xs font-bold text-brand-lightPrimary dark:text-brand-darkPrimary"
+                style="font-family:'Tajawal',sans-serif">أبعاد التميز</span>
+        </div>
+        <div class="flex gap-3 items-center">
+            <button id="themeToggleBtn"
+                class="text-2xl text-brand-lightPrimary dark:text-brand-darkPrimary hover:scale-110 transition-transform focus:outline-none"
+                aria-label="تبديل المظهر">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:inline-block"></i>
+            </button>
+            <a href="admin.html"
+                class="text-xl text-gray-400 dark:text-gray-500 hover:text-brand-lightPrimary dark:hover:text-brand-darkPrimary hover:scale-110 transition-transform focus:outline-none"
+                aria-label="لوحة التحكم">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+            <a href="contact.html"
+                class="bg-brand-lightPrimary dark:bg-brand-darkPrimary text-white dark:text-dark-main px-3 py-1.5 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all text-sm font-bold flex items-center gap-1.5"
+                aria-label="تواصل">
+                <i class="fa-solid fa-envelope text-base"></i>
+                تواصل معي
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow pt-24 pb-28 px-4 w-full max-w-3xl mx-auto relative content-fade-in">
+        <!-- Loader during fetch -->
+        <div id="loader" class="flex justify-center items-center h-64">
+            <i
+                class="fa-solid fa-circle-notch fa-spin text-4xl text-brand-lightPrimary dark:text-brand-darkPrimary"></i>
+        </div>
+
+        <!-- Injected Content Container -->
+        <div id="pageContent" class="hidden flex-col gap-6"></div>
+    </main>
+
+    <!-- Fixed Bottom App-like Navigation -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 z-50 glassmorphism-bottom pb-safe pt-2 px-2 w-full max-w-3xl mx-auto rounded-t-3xl shadow-[0_-4px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_25px_rgba(0,0,0,0.2)]">
+        <ul class="flex justify-between items-center text-xs sm:text-sm">
+            <li class="flex-1 text-center">
+                <a href="index.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary transition-colors active">
+                    <i class="fa-solid fa-house text-xl mb-1 nav-icon transition-transform"></i>
+                    <span class="font-bold">الرئيسية</span>
+                </a>
+            </li>
+            <li class="flex-1 text-center">
+                <a href="evidence.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary transition-colors">
+                    <i class="fa-regular fa-folder-open text-xl mb-1 nav-icon transition-transform"></i>
+                    <span class="font-bold">الشواهد</span>
+                </a>
+            </li>
+            <li class="flex-1 text-center">
+                <a href="math-lab.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary transition-colors">
+                    <i class="fa-solid fa-square-root-variable text-xl mb-1 nav-icon transition-transform"></i>
+                    <span class="font-bold">المعمل</span>
+                </a>
+            </li>
+            <li class="flex-1 text-center">
+                <a href="nafes.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary transition-colors">
+                    <i class="fa-solid fa-chart-line text-xl mb-1 nav-icon transition-transform"></i>
+                    <span class="font-bold">نافس</span>
+                </a>
+            </li>
+            <li class="flex-1 text-center">
+                <a href="honor-roll.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary transition-colors">
+                    <i class="fa-solid fa-medal text-xl mb-1 nav-icon transition-transform"></i>
+                    <span class="font-bold">الشرف</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Modals Overlay -->
+    <div id="modalOverlay"
+        class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center p-4">
+
+        <!-- Contact Modal -->
+        <div id="contactModal"
+            class="bg-light-main dark:bg-dark-main w-full max-w-md rounded-3xl p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 hidden flex flex-col gap-6 relative">
+            <button
+                class="close-modal absolute top-4 left-4 text-gray-400 hover:text-red-500 transition-colors text-2xl"><i
+                    class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-bold text-center text-brand-lightPrimary dark:text-brand-darkPrimary">تواصل معي
+            </h2>
+            <p class="text-center text-gray-600 dark:text-gray-300">يسعدني تواصلكم عبر القنوات التالية:</p>
+            <div class="flex flex-col gap-4 mt-2 mb-4" id="contactLinksContainer">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Supabase SDK & Shared JS -->
+        <script src="app.js?v=7"></script>
+</body>
+
+</html>

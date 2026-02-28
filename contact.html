@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تواصل معي | سامي الغامدي</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        light: { main: '#ffffff', surface: '#f8fafc', text: '#1e293b' },
+                        dark: { main: '#0f172a', surface: '#1e293b', text: '#f8fafc' },
+                        brand: { lightPrimary: '#0f766e', darkPrimary: '#2dd4bf', secondary: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body id="page-contact"
+    class="bg-light-main dark:bg-dark-main text-light-text dark:text-dark-text font-sans antialiased transition-colors duration-300 math-bg min-h-screen flex flex-col disable-tap-highlight">
+
+    <!-- Sticky Top Header -->
+    <header
+        class="fixed top-0 left-0 right-0 z-50 glassmorphism px-4 py-3 flex justify-between items-center w-full max-w-3xl mx-auto rounded-b-3xl">
+        <div class="flex flex-col items-start leading-tight">
+            <span class="text-lg font-extrabold text-slate-800 dark:text-white"
+                style="font-family:'Tajawal',sans-serif">سامي الغامدي</span>
+            <span class="text-xs font-bold text-brand-lightPrimary dark:text-brand-darkPrimary"
+                style="font-family:'Tajawal',sans-serif">أبعاد التميز</span>
+        </div>
+        <div class="flex gap-3 items-center">
+            <button id="themeToggleBtn"
+                class="text-2xl text-brand-lightPrimary dark:text-brand-darkPrimary hover:scale-110 transition-transform">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:inline-block"></i>
+            </button>
+            <a href="admin.html"
+                class="text-xl text-gray-400 dark:text-gray-500 hover:text-brand-lightPrimary dark:hover:text-brand-darkPrimary hover:scale-110 transition-transform">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+            <!-- Added href to index.html for back navigation since they are already on contact page -->
+            <a href="index.html"
+                class="bg-brand-lightPrimary dark:bg-brand-darkPrimary text-white dark:text-dark-main px-3 py-1.5 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all text-sm font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-house text-base"></i>
+                الرئيسية
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow pt-28 pb-32 px-4 w-full max-w-3xl mx-auto relative content-fade-in flex flex-col gap-8">
+
+        <!-- Header Section -->
+        <div class="text-center space-y-3">
+            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white" style="font-family:'Tajawal',sans-serif">
+                تواصل معي</h1>
+            <p class="text-gray-500 dark:text-gray-400 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
+                يسعدني تواصلكم للإجابة على استفساراتكم ومناقشة كل ما يخص العملية التعليمية وتطوير مستوى الطلاب.
+            </p>
+        </div>
+
+        <!-- Contact Info Cards (Grid Layout) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Location Card -->
+            <div
+                class="bg-white dark:bg-dark-surface rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-2 hover:shadow-md transition-shadow">
+                <div
+                    class="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 flex items-center justify-center text-xl mb-1">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-gray-200">الموقع</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">المملكة العربية السعودية</p>
+            </div>
+
+            <!-- Phone Card -->
+            <div
+                class="bg-white dark:bg-dark-surface rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-2 hover:shadow-md transition-shadow">
+                <div
+                    class="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 flex items-center justify-center text-xl mb-1">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-gray-200">رقم الهاتف</h3>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-300" style="direction: ltr">+966 50 577 5410
+                </p>
+            </div>
+
+            <!-- Email Card -->
+            <div
+                class="bg-white dark:bg-dark-surface rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-2 hover:shadow-md transition-shadow">
+                <div
+                    class="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 flex items-center justify-center text-xl mb-1">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-gray-200">البريد الإلكتروني</h3>
+                <a href="mailto:Sam.37@hotmail.com"
+                    class="text-sm font-medium text-brand-lightPrimary dark:text-brand-darkPrimary hover:underline"
+                    style="direction: ltr">Sam.37@hotmail.com</a>
+            </div>
+        </div>
+
+        <!-- Contact Form Wrapper -->
+        <div
+            class="bg-white dark:bg-dark-surface rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 mt-2">
+            <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-white mb-8">أرسل رسالة</h2>
+
+            <form id="contactPageForm" class="flex flex-col gap-5"
+                onsubmit="event.preventDefault(); alert('تم إرسال رسالتك بنجاح!'); this.reset();">
+                <!-- Row 1: Name & Email -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="name" class="text-sm font-semibold text-gray-700 dark:text-gray-300">الاسم
+                            الكريم</label>
+                        <input type="text" id="name" placeholder="أدخل اسمك" required
+                            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-lightPrimary dark:focus:ring-brand-darkPrimary focus:border-transparent transition-all dark:text-white placeholder-gray-400">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="email" class="text-sm font-semibold text-gray-700 dark:text-gray-300">البريد
+                            الإلكتروني</label>
+                        <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" required
+                            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-lightPrimary dark:focus:ring-brand-darkPrimary focus:border-transparent transition-all dark:text-white placeholder-gray-400 text-left"
+                            style="direction: ltr;">
+                    </div>
+                </div>
+
+                <!-- Row 2: Subject -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="subject" class="text-sm font-semibold text-gray-700 dark:text-gray-300">الموضوع</label>
+                    <input type="text" id="subject" placeholder="موضوع الرسالة" required
+                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-lightPrimary dark:focus:ring-brand-darkPrimary focus:border-transparent transition-all dark:text-white placeholder-gray-400">
+                </div>
+
+                <!-- Row 3: Message -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="message" class="text-sm font-semibold text-gray-700 dark:text-gray-300">الرسالة</label>
+                    <textarea id="message" rows="4" placeholder="اكتب رسالتك هنا..." required
+                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-lightPrimary dark:focus:ring-brand-darkPrimary focus:border-transparent transition-all resize-y dark:text-white placeholder-gray-400"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="mt-2 w-full bg-slate-900 dark:bg-brand-darkPrimary text-white dark:text-slate-900 rounded-xl py-3.5 px-6 font-bold text-base hover:bg-slate-800 dark:hover:bg-brand-lightPrimary hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
+                    <span>إرسال الرسالة</span>
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Fixed Bottom App-like Navigation -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 z-50 glassmorphism-bottom pb-safe pt-2 px-2 w-full max-w-3xl mx-auto rounded-t-3xl shadow-[0_-4px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_25px_rgba(0,0,0,0.2)]">
+        <ul class="flex justify-between items-center text-xs sm:text-sm">
+            <li class="flex-1 text-center"><a href="index.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary"><i
+                        class="fa-solid fa-house text-xl mb-1 nav-icon"></i><span class="font-bold">الرئيسية</span></a>
+            </li>
+            <li class="flex-1 text-center"><a href="evidence.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary"><i
+                        class="fa-regular fa-folder-open text-xl mb-1 nav-icon"></i><span
+                        class="font-bold">الشواهد</span></a></li>
+            <li class="flex-1 text-center"><a href="math-lab.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary"><i
+                        class="fa-solid fa-square-root-variable text-xl mb-1 nav-icon"></i><span
+                        class="font-bold">المعمل</span></a></li>
+            <li class="flex-1 text-center"><a href="nafes.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary"><i
+                        class="fa-solid fa-chart-line text-xl mb-1 nav-icon"></i><span class="font-bold">نافس</span></a>
+            </li>
+            <li class="flex-1 text-center"><a href="honor-roll.html"
+                    class="nav-btn w-full flex flex-col items-center gap-1 py-2 text-gray-500 hover:text-brand-lightPrimary"><i
+                        class="fa-solid fa-medal text-xl mb-1 nav-icon"></i><span class="font-bold">الشرف</span></a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Global App Scripts -->
+        <script src="app.js?v=7"></script>
+</body>
+
+</html>

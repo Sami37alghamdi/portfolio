@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم | سامي الغامدي</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        light: { main: '#ffffff', surface: '#f8fafc', text: '#1e293b' },
+                        dark: { main: '#0f172a', surface: '#1e293b', text: '#f8fafc' },
+                        brand: { lightPrimary: '#0f766e', darkPrimary: '#2dd4bf', secondary: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body id="page-admin"
+    class="bg-light-main dark:bg-dark-main text-light-text dark:text-dark-text font-sans antialiased transition-colors duration-300 math-bg min-h-screen flex flex-col disable-tap-highlight">
+
+    <header
+        class="fixed top-0 left-0 right-0 z-50 glassmorphism px-4 py-3 flex justify-between items-center w-full max-w-3xl mx-auto rounded-b-3xl">
+        <div class="flex flex-col items-start leading-tight">
+            <span class="text-lg font-extrabold text-slate-800 dark:text-white"
+                style="font-family:'Tajawal',sans-serif">سامي الغامدي</span>
+            <span class="text-xs font-bold text-brand-lightPrimary dark:text-brand-darkPrimary"
+                style="font-family:'Tajawal',sans-serif">أبعاد التميز</span>
+        </div>
+        <div class="flex gap-3 items-center">
+            <button id="themeToggleBtn"
+                class="text-2xl text-brand-lightPrimary dark:text-brand-darkPrimary hover:scale-110 transition-transform">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:inline-block"></i>
+            </button>
+            <a href="index.html"
+                class="text-xl text-gray-400 dark:text-gray-500 hover:text-brand-lightPrimary dark:hover:text-brand-darkPrimary hover:scale-110 transition-transform">
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-24 pb-28 px-4 w-full max-w-3xl mx-auto relative content-fade-in">
+        <div id="loader" class="flex justify-center items-center h-64">
+            <i
+                class="fa-solid fa-circle-notch fa-spin text-4xl text-brand-lightPrimary dark:text-brand-darkPrimary"></i>
+        </div>
+        <div id="pageContent" class="hidden flex-col gap-6">
+
+            <div
+                class="bg-light-surface dark:bg-dark-surface rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+                <div class="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-4">
+                    <i class="fa-solid fa-shield-halved text-2xl text-brand-secondary"></i>
+                    <h2 class="text-2xl font-bold text-light-text dark:text-dark-text">لوحة التحكم</h2>
+                </div>
+
+                <!-- Simple Login Section -->
+                <div id="adminAuthSection" class="flex flex-col gap-4 py-4">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم.
+                    </p>
+                    <input type="password" id="adminPassword" placeholder="كلمة المرور"
+                        class="w-full bg-light-main dark:bg-dark-main border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-lightPrimary dark:focus:ring-brand-darkPrimary text-center text-xl tracking-widest"
+                        dir="ltr">
+                    <button id="adminLoginBtn"
+                        class="bg-brand-lightPrimary dark:bg-brand-darkPrimary text-white dark:text-dark-main font-bold rounded-xl py-3 shadow-md hover:shadow-lg transition-all mt-2">تسجيل
+                        الدخول</button>
+                </div>
+
+                <!-- Editor Section -->
+                <div id="adminEditorSection" class="hidden flex flex-col gap-4">
+                    <div
+                        class="flex justify-between items-center bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-3 rounded-xl text-sm font-bold mt-4">
+                        <span><i class="fa-solid fa-check-circle ml-2"></i> تم تسجيل الدخول بصلاحية مدير</span>
+                        <button id="adminLogoutBtn" class="text-red-500 hover:text-red-700 text-xs underline">تسجيل
+                            الخروج</button>
+                    </div>
+
+                    <p class="text-xs text-gray-500 mb-2">قم بتعديل الروابط والنصوص في الأقسام أدناه:</p>
+
+                    <div id="visualEditorArea" class="w-full flex flex-col gap-6 text-right">
+                        <!-- Sections will be injected here via JS -->
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button id="savePublishBtn"
+                            class="bg-brand-secondary text-gray-900 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>حفظ ونشر التعديلات</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-[70] hidden opacity-0 transition-opacity duration-300 px-6 py-3 rounded-2xl shadow-xl font-bold flex items-center gap-3">
+        <i id="toastIcon" class="fa-solid"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="app.js?v=7"></script>
+</body>
+
+</html>

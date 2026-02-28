@@ -1,0 +1,741 @@
+{
+  "home": {
+    "heroImage": "https://drive.google.com/file/d/1Qo6kjfz74kZpWp6a--9Dyi8H8I0DvnVH/view?usp=drivesdk",
+    "scheduleUrl": "https://drive.google.com/file/d/1n2_APLOMYrPY5yVDKWY2RSNEL10AaRvH/view?usp=drivesdk",
+    "vision": "الريادة في تقديم تعليم رياضي يصنع جيلاً يمتلك أدوات التحليل المنطقي، قادراً على المنافسة بقوة وتفوق في المقاييس الوطنية والدولية، ومساهماً في بناء مستقبل وطنه.",
+    "mission": "تحويل الرياضيات من مجرد أرقام مجردة إلى مهارات تفكير حية، عبر بيئة تعليمية ملهمة، تصنع من طلاب اليوم قادة قادرين على التحليل، الابتكار، وصناعة المستقبل.",
+    "objectives": [
+      {
+        "title": "الجانب المعرفي والمهاري",
+        "icon": "fa-brain",
+        "items": [
+          "تبسيط المفاهيم الرياضية المجردة وربطها بمواقف الحياة اليومية الملموسة.",
+          "تنمية مهارات التفكير الناقد، والتحليل المنطقي، وبناء استراتيجيات ذكية لحل المشكلات.",
+          "رفع مؤشرات الأداء والتحصيل العلمي في الاختبارات المركزية والوطنية (نافس) والدولية (TIMSS)."
+        ]
+      },
+      {
+        "title": "الجانب النفسي والتحفيزي",
+        "icon": "fa-face-smile-beam",
+        "items": [
+          "كسر حاجز الرهبة من مادة الرياضيات، وبناء ثقة المتعلم في قدراته العقلية والتحليلية.",
+          "رعاية الفروق الفردية من خلال خطط إثرائية تتحدى قدرات الموهوبين، وخطط علاجية فعالة لسد الفاقد التعليمي."
+        ]
+      },
+      {
+        "title": "الجانب التقني والابتكاري",
+        "icon": "fa-lightbulb",
+        "items": [
+          "التوظيف الفعال للتقنية الحديثة ومعامل الرياضيات الافتراضية (Interactive Labs) لتحويل التعلم من التلقين إلى الاستكشاف.",
+          "التنويع المستمر في استراتيجيات التدريس بما يتناسب مع أنماط التعلم المختلفة للطلاب."
+        ]
+      },
+      {
+        "title": "الجانب المهني والمجتمعي",
+        "icon": "fa-handshake",
+        "items": [
+          "تفعيل الشراكة الإيجابية والمثمرة مع أولياء الأمور لدعم مسيرة الطالب التعليمية.",
+          "الإسهام الفعال في مجتمعات التعلم المهنية، وتبادل الخبرات مع الزملاء للارتقاء ببيئة العمل.",
+          "غرس القيم الأخلاقية والوطنية في نفوس الطلاب بما ينسجم مع أهداف سياسة التعليم ورؤية المملكة."
+        ]
+      }
+    ],
+    "stats": [
+      {
+        "label": "سنوات الخبرة",
+        "value": "15+"
+      },
+      {
+        "label": "الدورات المنجزة",
+        "value": "45"
+      },
+      {
+        "label": "نسبة النجاح",
+        "value": "98%"
+      },
+      {
+        "label": "مبادرات نوعية",
+        "value": "12"
+      }
+    ]
+  },
+  "evidenceReports": [
+    {
+      "id": "perf",
+      "mainTitle": "الأداء الوظيفي",
+      "subTitle": "التقارير الخاصة بتقييم الأداء الوظيفي والمتابعة الدورية",
+      "icon": "fa-chart-pie",
+      "infoGrid": [
+        {
+          "icon": "fa-calendar",
+          "title": "العام الدراسي",
+          "value": "1445 هـ"
+        },
+        {
+          "icon": "fa-star",
+          "title": "التقييم",
+          "value": "ممتاز (100%)"
+        },
+        {
+          "icon": "fa-clock",
+          "title": "فترة التقييم",
+          "value": "الفصل الأول"
+        },
+        {
+          "icon": "fa-file-signature",
+          "title": "جهة التقييم",
+          "value": "إدارة المدرسة"
+        },
+        {
+          "icon": "fa-award",
+          "title": "التقدير العام",
+          "value": "متميز"
+        },
+        {
+          "icon": "fa-chart-line",
+          "title": "مؤشر التطور",
+          "value": "+5%"
+        }
+      ],
+      "goalsTitle": "الأهداف المنجزة",
+      "goalsList": [
+        "تطبيق استراتيجيات التعلم النشط بنسبة 100%",
+        "رفع المستوى التحصيلي للطلاب في الرياضيات",
+        "تفعيل منصة مدرستي بشكل كامل يومياً"
+      ],
+      "proceduresTitle": "الإجراءات المتبعة",
+      "proceduresList": [
+        "حضور دورات تدريبية متخصصة",
+        "تبادل الزيارات مع الزملاء",
+        "تقديم دروس تطبيقية"
+      ],
+      "evidenceImages": [
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Evidence+1",
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Evidence+2"
+      ]
+    },
+    {
+      "id": "community",
+      "mainTitle": "التفاعل مع المجتمع",
+      "subTitle": "المبادرات والشراكات المجتمعية لتعزيز دور المدرسة في محيطها",
+      "icon": "fa-users",
+      "infoGrid": [
+        {
+          "icon": "fa-handshake",
+          "title": "عدد الشراكات",
+          "value": "3"
+        },
+        {
+          "icon": "fa-bullhorn",
+          "title": "المبادرات",
+          "value": "5 مبادرات"
+        },
+        {
+          "icon": "fa-users",
+          "title": "المستفيدين",
+          "value": "+200 طالب"
+        },
+        {
+          "icon": "fa-calendar-check",
+          "title": "الفعاليات",
+          "value": "4 فعاليات"
+        },
+        {
+          "icon": "fa-globe",
+          "title": "النطاق",
+          "value": "المجتمع المحلي"
+        },
+        {
+          "icon": "fa-award",
+          "title": "التكريم",
+          "value": "شهادة شكر"
+        }
+      ],
+      "goalsTitle": "أهداف الشراكة",
+      "goalsList": [
+        "تعزيز دور المدرسة في المجتمع",
+        "توفير بيئة داعمة للطلاب",
+        "استثمار طاقات المجتمع للتعليم"
+      ],
+      "proceduresTitle": "خطوات التنفيذ",
+      "proceduresList": [
+        "التواصل مع الجهات ذات العلاقة",
+        "إعداد مذكرات تفاهم",
+        "تنفيذ المبادرات وقياس الأثر"
+      ],
+      "evidenceImages": [
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Community+1"
+      ]
+    },
+    {
+      "id": "parents",
+      "mainTitle": "التفاعل مع أولياء الأمور",
+      "subTitle": "قنوات التواصل المستمرة وإشراك الأسرة في متابعة وتطوير المتعلم",
+      "icon": "fa-people-arrows",
+      "infoGrid": [
+        {
+          "icon": "fa-comments",
+          "title": "قنوات التواصل",
+          "value": "واتساب + منصة"
+        },
+        {
+          "icon": "fa-user-group",
+          "title": "عدد اللقاءات",
+          "value": "4 لقاءات"
+        },
+        {
+          "icon": "fa-envelope-open-text",
+          "title": "الرسائل المرسلة",
+          "value": "+500 رسالة"
+        },
+        {
+          "icon": "fa-square-check",
+          "title": "نسبة الرضا",
+          "value": "95%"
+        },
+        {
+          "icon": "fa-handshake-angle",
+          "title": "الاستجابة",
+          "value": "عالية جداً"
+        },
+        {
+          "icon": "fa-chart-pie",
+          "title": "تفاعل الأسر",
+          "value": "88%"
+        }
+      ],
+      "goalsTitle": "أهداف التواصل",
+      "goalsList": [
+        "إشراك ولي الأمر في العملية التعليمية",
+        "الوقوف الدوري على مستوى الطالب",
+        "حل المشكلات السلوكية والتعليمية مبكراً"
+      ],
+      "proceduresTitle": "طرق التواصل",
+      "proceduresList": [
+        "جروبات الواتس آب المخصصة",
+        "الاجتماعات الدورية بالمدرسة",
+        "الرسائل عبر منصة مدرستي"
+      ],
+      "evidenceImages": [
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Parents+1"
+      ]
+    },
+    {
+      "id": "strategies",
+      "mainTitle": "التنويع في استراتيجيات التدريس",
+      "subTitle": "استخدام طرق التدريس الحديثة المتوافقة مع مهارات القرن الحادي والعشرين",
+      "icon": "fa-chess-knight",
+      "infoGrid": [
+        {
+          "icon": "fa-lightbulb",
+          "title": "الاستراتيجيات",
+          "value": "12 استراتيجية"
+        },
+        {
+          "icon": "fa-users-gear",
+          "title": "التعلم التعاوني",
+          "value": "مفعل 100%"
+        },
+        {
+          "icon": "fa-brain",
+          "title": "التفكير الناقد",
+          "value": "مدمج"
+        },
+        {
+          "icon": "fa-puzzle-piece",
+          "title": "التعلم باللعب",
+          "value": "دوري"
+        },
+        {
+          "icon": "fa-chalkboard-user",
+          "title": "الصف المقلوب",
+          "value": "تطبيق أسبوعي"
+        },
+        {
+          "icon": "fa-laptop-code",
+          "title": "التقنية",
+          "value": "أساسي"
+        }
+      ],
+      "goalsTitle": "أهداف التنويع",
+      "goalsList": [
+        "مراعاة الفروق الفردية بين المتعلمين",
+        "زيادة دافعية الطلاب للتعلم",
+        "تنمية مهارات التفكير العليا"
+      ],
+      "proceduresTitle": "التطبيق العملي",
+      "proceduresList": [
+        "تقسيم الطلاب لمجموعات متجانسة",
+        "استخدام ألعاب تعليمية تفاعلية",
+        "تكليف الطلاب بالبحث والاستكشاف"
+      ],
+      "evidenceImages": [
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Strategies+1"
+      ]
+    },
+    {
+      "id": "results",
+      "mainTitle": "تحسين نتائج المتعلمين",
+      "subTitle": "خطط وتدخلات لتحقيق نقلة نوعية في التحصيل الدراسي المستهدف",
+      "icon": "fa-arrow-trend-up",
+      "infoGrid": [
+        {
+          "icon": "fa-chart-simple",
+          "title": "نسبة النجاح",
+          "value": "98%"
+        },
+        {
+          "icon": "fa-arrow-up-right-dots",
+          "title": "نسبة التحسن",
+          "value": "15% عن السابق"
+        },
+        {
+          "icon": "fa-star",
+          "title": "المتفوقين",
+          "value": "45 طالب"
+        },
+        {
+          "icon": "fa-notes-medical",
+          "title": "الخطط العلاجية",
+          "value": "مكتملة"
+        },
+        {
+          "icon": "fa-clipboard-check",
+          "title": "الاختبارات المعيارية",
+          "value": "أعلى من المتوسط"
+        },
+        {
+          "icon": "fa-award",
+          "title": "التميز",
+          "value": "الأول في القطاع"
+        }
+      ],
+      "goalsTitle": "الأهداف التحصيلية",
+      "goalsList": [
+        "رفع نسبة النجاح النوعي",
+        "تقليص فجوة التعلم",
+        "تجهيز الطلاب لاختبارات نافس والقدرات"
+      ],
+      "proceduresTitle": "أدوات التحسين",
+      "proceduresList": [
+        "اختبارات تشخيصية بداية العام",
+        "حصص تقوية للمتأخرين دراسياً",
+        "برامج إثرائية للموهوبين"
+      ],
+      "evidenceImages": [
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Results+1",
+        "https://via.placeholder.com/600x400/2f7041/ffffff?text=Results+2"
+      ]
+    },
+    {
+      "id": "planning",
+      "mainTitle": "إعداد وتنفيذ خطة التعلم",
+      "subTitle": "دفاتر التحضير والخطط الفصلية والدروس التطبيقية المتميزة",
+      "icon": "fa-book-open",
+      "infoGrid": [
+        {
+          "icon": "fa-pen-to-square",
+          "title": "التحضير الكتابي",
+          "value": "مكتمل"
+        },
+        {
+          "icon": "fa-laptop-file",
+          "title": "التحضير الإلكتروني",
+          "value": "معتمد"
+        },
+        {
+          "icon": "fa-calendar-days",
+          "title": "الخطة الفصلية",
+          "value": "شاملة"
+        },
+        {
+          "icon": "fa-file-lines",
+          "title": "أوراق العمل",
+          "value": "+100 ورقة"
+        },
+        {
+          "icon": "fa-video",
+          "title": "دروس تطبيقية",
+          "value": "دروس مسجلة"
+        },
+        {
+          "icon": "fa-check-double",
+          "title": "المراجعة",
+          "value": "أسبوعية"
+        }
+      ],
+      "goalsTitle": "أهداف التخطيط",
+      "goalsList": [
+        "تغطية المنهج في الوقت المحدد",
+        "توزيع عادل للأهداف والأنشطة",
+        "ربط الدروس بالواقع والحياة"
+      ],
+      "proceduresTitle": "مكونات التخطيط",
+      "proceduresList": [
+        "إعداد الأهداف السلوكية بدقة",
+        "تجهيز الوسائل التعليمية المسبق",
+        "تحديد أساليب التقويم المناسبة"
+      ],
+      "evidenceImages": []
+    },
+    {
+      "id": "tech",
+      "mainTitle": "توظيف تقنيات ووسائل التعلم",
+      "subTitle": "استثمار المنصات الرقمية والتطبيقات الذكية في الشرح والتقويم",
+      "icon": "fa-laptop-code",
+      "infoGrid": [
+        {
+          "icon": "fa-desktop",
+          "title": "السبورة الذكية",
+          "value": "مستخدمة 100%"
+        },
+        {
+          "icon": "fa-mobile-screen",
+          "title": "التطبيقات",
+          "value": "Kahoot, Quizlet"
+        },
+        {
+          "icon": "fa-cloud",
+          "title": "المعامل الافتراضية",
+          "value": "GeoGebra"
+        },
+        {
+          "icon": "fa-globe",
+          "title": "منصة مدرستي",
+          "value": "تفعيل كامل"
+        },
+        {
+          "icon": "fa-file-pdf",
+          "title": "الملفات التفاعلية",
+          "value": "متوفرة"
+        },
+        {
+          "icon": "fa-check-to-slot",
+          "title": "الاختبارات الرقمية",
+          "value": "عبر Forms"
+        }
+      ],
+      "goalsTitle": "الهدف من التقنية",
+      "goalsList": [
+        "تبسيط المفاهيم الرياضية المجردة",
+        "جذب انتباه الجيل الرقمي",
+        "توفير تغذية راجعة فورية للطلاب"
+      ],
+      "proceduresTitle": "خطوات التفعيل",
+      "proceduresList": [
+        "تصميم عروض تقديمية تفاعلية",
+        "إجراء مسابقات إلكترونية وتقييم إلكتروني",
+        "مشاركة روابط إثرائية مرئية"
+      ],
+      "evidenceImages": []
+    },
+    {
+      "id": "env",
+      "mainTitle": "تهيئة البيئة التعليمية",
+      "subTitle": "تصميم غرف الصف وجعلها جاذبة وملهمة للمتعلمين نفسياً وحسياً",
+      "icon": "fa-school",
+      "infoGrid": [
+        {
+          "icon": "fa-wand-magic-sparkles",
+          "title": "الجاذبية",
+          "value": "بيئة محفزة"
+        },
+        {
+          "icon": "fa-border-all",
+          "title": "تنظيم المقاعد",
+          "value": "مرن ومتغير"
+        },
+        {
+          "icon": "fa-palette",
+          "title": "لوحات الشرف",
+          "value": "محدثة"
+        },
+        {
+          "icon": "fa-shapes",
+          "title": "الركن العلمي",
+          "value": "متوفر"
+        },
+        {
+          "icon": "fa-face-smile",
+          "title": "البيئة النفسية",
+          "value": "إيجابية"
+        },
+        {
+          "icon": "fa-shield-halved",
+          "title": "الأمن والسلامة",
+          "value": "مكتمل"
+        }
+      ],
+      "goalsTitle": "أهداف تهيئة البيئة",
+      "goalsList": [
+        "خلق جو ايجابي يحفز على المشاركة",
+        "إبراز أعمال الطلاب المتميزة",
+        "توفير بيئة نفسية آمنة بعيدة عن التوتر"
+      ],
+      "proceduresTitle": "الإجراءات",
+      "proceduresList": [
+        "تغيير تنظيم الطاولات حسب الاستراتيجية",
+        "عمل مسابقات لأفضل ركن صفي",
+        "تعليق وسائل تعليمية من صنع الطلاب"
+      ],
+      "evidenceImages": []
+    },
+    {
+      "id": "management",
+      "mainTitle": "الإدارة الصفية",
+      "subTitle": "لوائح السلوك والمواظبة وقواعد الانضباط الفعالة داخل القاعة",
+      "icon": "fa-person-chalkboard",
+      "infoGrid": [
+        {
+          "icon": "fa-scale-balanced",
+          "title": "العدالة",
+          "value": "الجميع سواسية"
+        },
+        {
+          "icon": "fa-hands-clapping",
+          "title": "التعزيز السلوكي",
+          "value": "مستمر"
+        },
+        {
+          "icon": "fa-clipboard-user",
+          "title": "المواظبة",
+          "value": "متابعة يومية"
+        },
+        {
+          "icon": "fa-shield",
+          "title": "القواعد الصفية",
+          "value": "واضحة ومعلنة"
+        },
+        {
+          "icon": "fa-stopwatch",
+          "title": "إدارة الوقت",
+          "value": "استثمار عالي"
+        },
+        {
+          "icon": "fa-face-rolling-eyes",
+          "title": "المخالفات",
+          "value": "شبه معدومة"
+        }
+      ],
+      "goalsTitle": "أهداف الإدارة",
+      "goalsList": [
+        "تأسيس قواعد صفية بالتعاون مع الطلاب",
+        "ضمان استثمار وقت الحصة بالكامل",
+        "الحد من المشكلات السلوكية بطرق وقائية"
+      ],
+      "proceduresTitle": "آليات الضبط",
+      "proceduresList": [
+        "كتابة القواعد وتعليقها",
+        "تطبيق نظام النقاط والمكافآت",
+        "توزيع المهام القيادية على الطلاب داخل الصف"
+      ],
+      "evidenceImages": []
+    },
+    {
+      "id": "analysis",
+      "mainTitle": "تحليل نتائج المتعلمين",
+      "subTitle": "قراءة وتفسير نتائج الاختبارات لبناء الخطط العلاجية والإثرائية",
+      "icon": "fa-magnifying-glass-chart",
+      "infoGrid": [
+        {
+          "icon": "fa-chart-pie",
+          "title": "الرسوم البيانية",
+          "value": "متوفرة"
+        },
+        {
+          "icon": "fa-file-excel",
+          "title": "قواعد البيانات",
+          "value": "محدثة"
+        },
+        {
+          "icon": "fa-filter",
+          "title": "التشخيص",
+          "value": "دقيق للفاقد"
+        },
+        {
+          "icon": "fa-briefcase-medical",
+          "title": "العلاج",
+          "value": "خطط مزمنة"
+        },
+        {
+          "icon": "fa-gem",
+          "title": "الإثراء",
+          "value": "مستمر"
+        },
+        {
+          "icon": "fa-eye",
+          "title": "المتابعة",
+          "value": "بعدية"
+        }
+      ],
+      "goalsTitle": "أهداف التحليل",
+      "goalsList": [
+        "معرفة مواطن الضعف بدقة لكل مهارة",
+        "تحديد الفروق الفردية علمياً",
+        "قياس أثر التدريس وتعديل المسار"
+      ],
+      "proceduresTitle": "خطوات العمل",
+      "proceduresList": [
+        "رصد الدرجات بعد كل تقويم",
+        "استخراج نسب الإتقان باستخدام الإكسل",
+        "تصميم أوراق علاجية مخصصة للمتعثرين"
+      ],
+      "evidenceImages": []
+    },
+    {
+      "id": "assessment",
+      "mainTitle": "تنوع أساليب التقويم",
+      "subTitle": "التقويم البنائي والختامي، التقويم الذاتي وتقويم الأقران، وملفات الإنجاز",
+      "icon": "fa-clipboard-check",
+      "infoGrid": [
+        {
+          "icon": "fa-list-check",
+          "title": "التقويم البنائي",
+          "value": "كل حصة"
+        },
+        {
+          "icon": "fa-flag-checkered",
+          "title": "التقويم الختامي",
+          "value": "دوري"
+        },
+        {
+          "icon": "fa-users-viewfinder",
+          "title": "تقويم الأقران",
+          "value": "مفعل"
+        },
+        {
+          "icon": "fa-folder-open",
+          "title": "ملفات الإنجاز",
+          "value": "ورقي/رقمي"
+        },
+        {
+          "icon": "fa-pen-clip",
+          "title": "المشاريع",
+          "value": "مشروع لكل فصل"
+        },
+        {
+          "icon": "fa-star-half-stroke",
+          "title": "المطويات",
+          "value": "شبه أسبوعي"
+        }
+      ],
+      "goalsTitle": "أهداف التقويم",
+      "goalsList": [
+        "قياس مدى تحقق الأهداف التعليمية المتنوعة",
+        "تدريب الطلاب على نقد وتحسين أعمالهم",
+        "شمولية التقييم للجانب المعرفي والمهاري"
+      ],
+      "proceduresTitle": "وسائل التقويم",
+      "proceduresList": [
+        "استخدام قوائم الرصد وسلالم التقدير",
+        "ملاحظة الأداء العملي في المعمل",
+        "مراجعة دورية لملفات الإنجاز"
+      ],
+      "evidenceImages": []
+    }
+  ],
+  "teacherName": "سامي الغامدي",
+  "managerName": "الأستاذ ماجد سعيد الغامدي",
+  "math_lab": {
+    "tools": [
+      {
+        "name": "GeoGebra",
+        "link": "https://www.geogebra.org/",
+        "icon": "fa-calculator"
+      },
+      {
+        "name": "Desmos Graphing",
+        "link": "https://www.desmos.com/",
+        "icon": "fa-chart-area"
+      },
+      {
+        "name": "Mathway",
+        "link": "https://www.mathway.com/",
+        "icon": "fa-square-root-variable"
+      }
+    ],
+    "visuals": [
+      {
+        "title": "عرض تقديمي: نظرية فيثاغورس",
+        "link": "https://drive.google.com/file/d/1B7Jb5hxxxxXXX/view?usp=sharing"
+      },
+      {
+        "title": "إنفوجرافيك: قوانين المساحات",
+        "link": "https://drive.google.com/file/d/1B7Jb5hxxxxXXX/view?usp=sharing"
+      }
+    ]
+  },
+  "nafes": {
+    "chartData": {
+      "labels": [
+        "التقويم التشخيصي",
+        "الأسبوع 1",
+        "الأسبوع 2",
+        "الأسبوع 3",
+        "الأسبوع 4"
+      ],
+      "values": [
+        45,
+        55,
+        68,
+        82,
+        94
+      ]
+    },
+    "quickStats": {
+      "modelsCount": "12",
+      "improvement": "+49%",
+      "studentsCount": "120"
+    },
+    "preparationPlans": [
+      {
+        "title": "خطة التهيئة لنهاية الفصل",
+        "lastUpdated": "تحديث: قبل يومين",
+        "url": "#"
+      },
+      {
+        "title": "خطة التدخل العلاجي الخاصة",
+        "lastUpdated": "تحديث: الأسبوع الماضي",
+        "url": "#"
+      }
+    ],
+    "simulationModels": [
+      {
+        "title": "نموذج محاكاة 1",
+        "details": "يغطي الوحدة الأولى والثانية",
+        "url": "#"
+      },
+      {
+        "title": "نموذج محاكاة 2",
+        "details": "اختبار شامل للمهارات الأساسية",
+        "url": "#"
+      }
+    ]
+  },
+  "honor_roll": [
+    {
+      "name": "أحمد عبدالله",
+      "score": "99%",
+      "badge": "ذهبية"
+    },
+    {
+      "name": "خالد محمد",
+      "score": "98%",
+      "badge": "فضية"
+    },
+    {
+      "name": "سعد عبدالرحمن",
+      "score": "97%",
+      "badge": "برونزية"
+    },
+    {
+      "name": "فيصل سعيد",
+      "score": "96%",
+      "badge": "تميز"
+    }
+  ],
+  "contact": {
+    "whatsapp": "966500000000",
+    "email": "teacher@example.com"
+  }
+}
