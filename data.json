@@ -737,5 +737,16 @@
   "contact": {
     "whatsapp": "966500000000",
     "email": "teacher@example.com"
+  },
+  "personalInfo": {
+    "name": "سامي فرحان الغامدي",
+    "job": "معلم",
+    "phone": "966505775410",
+    "email": "t302156@bb.moe.gov.sa",
+    "specialty": "رياضيات",
+    "stage": "ابتدائي - متوسط",
+    "school": "ابتدائية السعودية بالباحة",
+    "licenseUrl": "",
+    "certificateUrl": ""
   }
 }

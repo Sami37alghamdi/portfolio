@@ -62,12 +62,15 @@ function initApp() {
 
     modalOverlay = document.getElementById('modalOverlay');
     contactBtn = document.getElementById('contactBtn');
+    // For desktop top header button
+    const contactBtnDesktop = document.getElementById('contactBtnDesktop');
     contactModal = document.getElementById('contactModal');
     closeModals = document.querySelectorAll('.close-modal');
 
     initTheme();
     fetchData();
     setupModals();
+    setupNavTransitions();
 
     // Add specific JS for admin page toast if exists
     if (pageId === 'page-admin') {
@@ -80,6 +83,74 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
     initApp();
+}
+
+// --- SPA Navigation Transitions ---
+function setupNavTransitions() {
+    const navLinks = document.querySelectorAll('nav .nav-btn');
+
+    // Helper to map href to page IDs
+    const hrefToPageId = {
+        'index.html': 'page-home',
+        'evidence.html': 'page-evidence',
+        'math-lab.html': 'page-math-lab',
+        'nafes.html': 'page-nafes',
+        'honor-roll.html': 'page-honor'
+    };
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const targetHref = link.getAttribute('href');
+            // If we are already on this page, do nothing
+            if (targetHref === window.location.pathname.split('/').pop() ||
+                (window.location.pathname.endsWith('/') && targetHref === 'index.html')) {
+                return;
+            }
+
+            const targetPageId = hrefToPageId[targetHref];
+            if (!targetPageId) {
+                // Fallback for links we haven't mapped (e.g. external)
+                window.location.href = targetHref;
+                return;
+            }
+
+            // Update active state in bottom nav instantly
+            navLinks.forEach(n => n.classList.remove('active'));
+            link.classList.add('active');
+
+            // 1. Trigger fade out
+            if (pageContent) {
+                pageContent.classList.remove('content-fade-in');
+                pageContent.classList.add('content-fade-out');
+            }
+
+            // 2. Wait for animation to finish (~300ms)
+            setTimeout(() => {
+                // Update History API so URL changes but page doesn't reload
+                window.history.pushState({ pageId: targetPageId }, '', targetHref);
+
+                // Update global page state
+                pageId = targetPageId;
+                document.body.id = pageId; // For specific page scoping if needed
+
+                // 3. Re-render new page content
+                if (loader) loader.classList.add('hidden'); // Ensure loader is hidden
+                renderCurrentPage();
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            }, 300); // Matches the CSS duration
+        });
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        // Simple reload for now to ensure state is clean when using browser navigation
+        window.location.reload();
+    });
 }
 
 // --- Theme Management ---
@@ -100,7 +171,64 @@ function initTheme() {
     }
 }
 
+// --- Google Drive image fallback helper ---
+// Called inline from onerror to avoid complex string escaping issues.
+// Tries lh3 first; if that also fails, swaps the wrapper to an iframe embed.
+function driveImgError(img, lh3, preview, wrapperId) {
+    if (!img._tried_lh3) {
+        img._tried_lh3 = true;
+        img.src = lh3;
+    } else {
+        var w = document.getElementById(wrapperId);
+        if (w) {
+            w.style.minHeight = '400px';
+            w.innerHTML = '<iframe src="' + preview + '" class="w-full border-none" style="height:400px" allowfullscreen></iframe>';
+        }
+    }
+}
+
 // --- Theme Management ---
+
+// --- Global Observer for Staggered Animations ---
+let animationObserver = null;
+
+function setupIntersectionObserver() {
+    if (animationObserver) {
+        animationObserver.disconnect();
+    }
+
+    // Select all elements that should animate in
+    const animatables = document.querySelectorAll('.stagger-item, .stagger-slide-right, .stagger-scale-center, .observer-item');
+    if (animatables.length === 0) return;
+
+    animationObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add a slight delay based on the element's order/index to create the stagger effect
+                const delay = entry.target.dataset.delay || 0;
+                setTimeout(() => {
+                    entry.target.classList.add('in-view');
+                    if (entry.target.classList.contains('observer-item')) {
+                        entry.target.classList.add('show');
+                        entry.target.classList.remove('opacity-0');
+                    }
+                }, delay);
+                observer.unobserve(entry.target); // Only animate once
+            }
+        });
+    }, {
+        threshold: 0.1, // Trigger when 10% visible
+        rootMargin: "0px 0px -50px 0px" // Trigger slightly before it comes fully into view
+    });
+
+    // Assign delays to siblings to create stagger
+    let delayCounter = 0;
+    animatables.forEach((el, index) => {
+        // Reset counter if it's a new section (crude check based on previous element's top position, or just use a small base delay)
+        el.dataset.delay = (index % 10) * 100; // max 1 second delay total for a batch
+        animationObserver.observe(el);
+    });
+}
 
 // --- Data Fetching ---
 async function fetchData() {
@@ -113,6 +241,7 @@ async function fetchData() {
         console.error("Error fetching local data:", e);
         if (pageId !== 'page-admin' && pageContent) {
             pageContent.classList.remove('hidden');
+            pageContent.classList.add('content-fade-in');
             pageContent.innerHTML = `
                 <div class="text-center text-red-500 mt-20">
                     <i class="fa-solid fa-triangle-exclamation text-4xl mb-4"></i>
@@ -127,7 +256,7 @@ async function fetchData() {
     if (loader) loader.classList.add('hidden');
     if (pageContent) {
         pageContent.classList.remove('hidden');
-        pageContent.classList.add('flex');
+        pageContent.classList.add('flex', 'content-fade-in');
     }
     renderCurrentPage();
 
@@ -135,7 +264,9 @@ async function fetchData() {
     try {
         const freshConfig = await supabaseGetConfig();
         if (freshConfig) {
-            appData = freshConfig;
+            // Merge: Supabase values take priority, but local data.json provides defaults
+            // for keys not yet saved to Supabase (e.g. newly added features like personalInfo).
+            appData = Object.assign({}, appData, freshConfig);
             renderCurrentPage(); // Re-render with fresh Supabase data
         }
     } catch (e) {
@@ -145,6 +276,14 @@ async function fetchData() {
 }
 
 function renderCurrentPage() {
+    // Reset page content visibility classes if they were set by a transition
+    if (pageContent) {
+        pageContent.classList.remove('content-fade-out');
+        // Force a reflow to restart animation if needed, though usually just re-rendering handles it
+        void pageContent.offsetWidth;
+        pageContent.classList.add('content-fade-in');
+    }
+
     switch (pageId) {
         case 'page-home': renderHome(); break;
         case 'page-evidence': renderEvidence(); break;
@@ -161,6 +300,11 @@ function renderCurrentPage() {
             break;
         }
     }
+
+    // Call Intersection Observer after every render
+    setTimeout(() => {
+        setupIntersectionObserver();
+    }, 50); // small timeout to ensure DOM is fully repainted
 }
 
 
@@ -179,26 +323,66 @@ function parseLinks(text) {
 function renderLinks(linksArray) {
     if (!linksArray || linksArray.length === 0) return '<div class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-xl text-gray-400 text-sm">لا يوجد ملف مرفق حالياً</div>';
 
-    return linksArray.map(url => {
+    return linksArray.map((url, idx) => {
         if (!url || url.trim() === '') return '';
 
+        // ---- Google Drive links ----
         if (url.includes('drive.google.com')) {
-            let previewUrl = url;
-            if (previewUrl.includes('/view')) {
-                previewUrl = previewUrl.replace(/\/view.*$/, '/preview');
-            } else if (!previewUrl.includes('/preview')) {
-                previewUrl += previewUrl.includes('?') ? '&usp=sharing' : '/preview';
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+            if (driveMatch) {
+                const fileId = driveMatch[1];
+                const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+                const lh3Url = `https://lh3.googleusercontent.com/d/${fileId}`;
+                const previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                const wrapperId = `driveWrap_${fileId}_${idx}`;
+
+                // Try to load as an image first (works for photos/images).
+                // On failure → lh3 → full iframe embed preview (works for PDFs & docs too).
+                return `
+                <div id="${wrapperId}" class="w-full mb-4 rounded-2xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800" style="min-height:200px">
+                    <img
+                        src="${thumbUrl}"
+                        class="w-full h-auto object-cover rounded-2xl"
+                        alt="مرفق"
+                        onerror="
+                            var img = this;
+                            if (!img._tried_lh3) {
+                                img._tried_lh3 = true;
+                                img.src = '${lh3Url}';
+                            } else {
+                                // All img attempts failed — show iframe embed (PDF/Doc viewer)
+                                var wrapper = document.getElementById('${wrapperId}');
+                                if (wrapper) {
+                                    wrapper.style.minHeight = '500px';
+                                    wrapper.innerHTML = '<iframe src=\\'${previewUrl}\\' class=\\'w-full h-full border-none\\' style=\\'min-height:500px\\' allow=\\'autoplay\\' allowfullscreen scrolling=\\'yes\\'></iframe>';
+                                }
+                            }
+                        "
+                    >
+                </div>`;
             }
-            // Wrap in a div with touch scrolling to fix Safari/iOS iframe scroll issues
-            return `< div class="w-full h-80 md:h-[500px] mb-4 rounded-2xl overflow-hidden shadow-sm relative" style = "-webkit-overflow-scrolling: touch; overflow-y: scroll;" >
-                <iframe src="${previewUrl}" class="absolute top-0 left-0 w-full h-full border-none bg-white dark:bg-dark-main" allow="autoplay" allowfullscreen scrolling="yes"></iframe>
-                    </div > `;
+
+            // Generic drive link without /d/ID pattern — use iframe directly
+            let embedUrl = url.replace(/\/view.*$/, '/preview').replace(/\/edit.*$/, '/preview');
+            if (!embedUrl.includes('/preview')) embedUrl += '/preview';
+            return `<div class="w-full h-80 md:h-[500px] mb-4 rounded-2xl overflow-hidden shadow-sm" style="-webkit-overflow-scrolling:touch">
+                <iframe src="${embedUrl}" class="w-full h-full border-none bg-white dark:bg-dark-main" allow="autoplay" allowfullscreen scrolling="yes"></iframe>
+            </div>`;
         }
 
-        if (url.match(/\.(jpeg|jpg|gif|png)$/i)) {
-            return `< img src = "${url}" class="w-full rounded-2xl shadow-sm mb-4" alt = "مرفق" > `;
+        // ---- Direct image URL ----
+        if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+            return `<img src="${url}" class="w-full rounded-2xl shadow-sm mb-4" alt="مرفق" onerror="this.onerror=null;this.style.display='none'">`;
         }
-        return `< a href = "${url}" target = "_blank" class="block p-4 bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 mb-4 text-blue-500 underline font-bold" dir = "ltr" > <i class="fa-solid fa-link mr-2"></i>${url}</a > `;
+
+        // ---- Fallback: clickable link ----
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="flex items-center gap-3 p-4 bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 mb-4 text-blue-500 hover:text-blue-600 font-bold transition-colors"
+            dir="ltr">
+            <i class="fa-solid fa-link shrink-0"></i>
+            <span class="truncate text-sm">${url}</span>
+        </a>`;
     }).join('');
 }
 
@@ -207,41 +391,74 @@ function renderLinks(linksArray) {
 function renderHome() {
     const data = appData.home;
 
-    let heroHtml = `
-                < div class="img-placeholder shadow-lg relative overflow-hidden rounded-b-3xl" >
-                    <i class="fa-solid fa-image opacity-30 text-6xl"></i>
-        </div >
-                `;
+    let heroImgElement = `
+        <div class="img-placeholder w-full min-h-[250px] md:h-[400px] shadow-lg relative overflow-hidden rounded-b-3xl flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <i class="fa-solid fa-image opacity-30 text-6xl"></i>
+        </div>`;
 
     if (data.heroImage && data.heroImage.trim() !== '') {
         const driveMatch = data.heroImage.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        const imgClass = "w-full h-auto object-cover rounded-b-3xl shadow-lg min-h-[250px] md:min-h-[400px]";
+
         if (driveMatch) {
             const fileId = driveMatch[1];
-            // Try multiple Google Drive URL patterns to avoid Safari blocking & black iframe fallback
-            const imgClass = "w-full min-h-[250px] md:h-[400px] object-contain bg-light-surface dark:bg-dark-main shadow-lg relative rounded-b-3xl border border-gray-200 dark:border-gray-800";
-            const url1 = `https://drive.google.com/uc?export=view&id=${fileId}`;
-            const url2 = `https://lh3.googleusercontent.com/d/${fileId}`;
-            const url3 = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
-            heroHtml = `<img src="${url1}" class="${imgClass}" alt="صورة الغلاف" onerror="this.onerror=function(){this.onerror=function(){this.style.display='none'};this.src='${url3}'};this.src='${url2}'">`;
+            // URL strategy: thumbnail API is the most reliable for Google Drive images.
+            // We build a chain: thumbnail → lh3 → iframe preview → placehold.co
+            const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+            const lh3Url = `https://lh3.googleusercontent.com/d/${fileId}`;
+            const previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+            const fallback = `https://placehold.co/800x400?text=صورة+الغلاف`;
+
+            // Build a container that will swap to iframe if all <img> attempts fail
+            heroImgElement = `
+                <div id="heroImgWrapper" class="w-full min-h-[250px] md:min-h-[400px] rounded-b-3xl overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-800">
+                    <img id="heroImg"
+                        src="${thumbUrl}"
+                        class="${imgClass}"
+                        alt="صورة الغلاف"
+                        onerror="
+                            var img = this;
+                            if (!img._tried_lh3) {
+                                img._tried_lh3 = true;
+                                img.src = '${lh3Url}';
+                            } else {
+                                // All img URLs failed — replace with iframe embed
+                                var wrapper = document.getElementById('heroImgWrapper');
+                                if (wrapper) {
+                                    wrapper.innerHTML = '<iframe src=\\'${previewUrl}\\' class=\\'w-full min-h-[250px] md:min-h-[400px] border-none\\' allowfullscreen></iframe>';
+                                }
+                            }
+                        "
+                    >
+                </div>`;
         } else if (data.heroImage.includes('drive.google.com')) {
-            let previewUrl = data.heroImage;
-            if (previewUrl.includes('/view')) {
-                previewUrl = previewUrl.replace(/\/view.*$/, '/preview');
-            } else if (!previewUrl.includes('/preview')) {
-                previewUrl += previewUrl.includes('?') ? '&usp=sharing' : '/preview';
-            }
-            heroHtml = `<iframe src="${previewUrl}" class="w-full min-h-[250px] md:h-[400px] border-none shadow-lg relative overflow-hidden rounded-b-3xl" allow="autoplay" allowfullscreen></iframe>`;
+            // Fallback: generic drive link — convert to embed preview
+            let embedUrl = data.heroImage
+                .replace(/\/view.*$/, '/preview')
+                .replace(/\/edit.*$/, '/preview');
+            if (!embedUrl.includes('/preview')) embedUrl += '/preview';
+            heroImgElement = `<iframe src="${embedUrl}" class="${imgClass.replace('object-cover', '').trim()} border-none" style="min-height:300px" allowfullscreen></iframe>`;
         } else {
-            heroHtml = `<img src="${data.heroImage}" class="w-full min-h-[250px] md:h-[400px] object-contain bg-light-surface shadow-lg relative rounded-b-3xl border border-gray-200 dark:border-gray-800" alt="صورة الرئيسية">`;
+            // Direct URL (not Google Drive)
+            heroImgElement = `<img src="${data.heroImage}" class="${imgClass}" alt="صورة الرئيسية" onerror="this.onerror=null;this.src='https://placehold.co/800x400?text=صورة+الغلاف'">`;
         }
     }
+
+    let heroHtml = `
+        <div class="relative inline-block w-full text-center opacity-0 -translate-y-10 transition-all duration-1000 ease-out observer-item">
+            ${heroImgElement}
+            <button class="neon-about-btn absolute bottom-6 left-6 md:left-10 z-10 flex items-center gap-2 px-5 py-2.5 rounded-full font-['Tajawal'] font-bold text-sm cursor-pointer bg-slate-900/80 text-teal-400 border border-teal-400/50 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-slate-800 neon-button">
+                <i class="fas fa-user-tie text-lg"></i> نبذة عني
+            </button>
+        </div>
+    `;
 
     const html = `
         <!-- Hero Image -->
         ${heroHtml}
         
         <!-- Vision -->
-        <section class="bg-light-surface dark:bg-dark-surface p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
+        <section class="bg-light-surface dark:bg-dark-surface p-6 rounded-3xl shadow-sm border border-transparent relative overflow-hidden group opacity-0 translate-x-12 scale-95 transition-all duration-700 delay-200 ease-out observer-item mt-4 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(15,118,110,0.15)] hover:border-teal-500/30 hover:border">
             <div class="absolute -right-4 -top-4 text-brand-lightPrimary/10 dark:text-brand-darkPrimary/10 text-6xl transform -rotate-12 transition-transform group-hover:rotate-0"><i class="fa-solid fa-eye"></i></div>
             <h2 class="text-xl font-bold text-brand-lightPrimary dark:text-brand-darkPrimary mb-3 relative z-10 flex gap-2 items-center">
                 <i class="fa-solid fa-eye"></i> الرؤية
@@ -250,7 +467,7 @@ function renderHome() {
         </section>
 
         <!-- Mission -->
-        <section class="bg-light-surface dark:bg-dark-surface p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
+        <section class="bg-light-surface dark:bg-dark-surface p-6 rounded-3xl shadow-sm border border-transparent relative overflow-hidden group opacity-0 translate-x-12 scale-95 transition-all duration-700 delay-400 ease-out observer-item mt-4 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(15,118,110,0.15)] hover:border-teal-500/30 hover:border">
             <div class="absolute -left-4 -top-4 text-brand-secondary/10 text-6xl transform rotate-12 transition-transform group-hover:rotate-0"><i class="fa-solid fa-bullseye"></i></div>
             <h2 class="text-xl font-bold text-brand-secondary mb-3 relative z-10 flex gap-2 items-center">
                 <i class="fa-solid fa-bullseye"></i> الرسالة
@@ -289,7 +506,7 @@ function renderHome() {
             }
 
             return `
-            <section class="mt-4 mb-2 relative">
+            <section class="mt-4 mb-2 relative opacity-0 translate-y-10 transition-all duration-700 delay-500 ease-out observer-item">
                 <h2 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 px-2 flex items-center gap-2">
                     <i class="fa-solid fa-calendar-days text-brand-lightPrimary dark:text-brand-darkPrimary"></i> الجدول الدراسي
                 </h2>
@@ -302,13 +519,13 @@ function renderHome() {
 
         <!-- Objectives -->
         ${data.objectives && data.objectives.length > 0 ? `
-        <section class="mt-4 mb-2 relative">
+        <section class="mt-4 mb-2 relative opacity-0 translate-y-10 transition-all duration-700 delay-500 ease-out observer-item">
             <h2 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 px-2 flex items-center gap-2">
                 <i class="fa-solid fa-list-check text-brand-lightPrimary dark:text-brand-darkPrimary"></i> الأهداف المهنية والتربوية
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 ${data.objectives.map(obj => `
-                    <div class="bg-white dark:bg-dark-surface p-5 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow group">
+                    <div class="bg-white dark:bg-dark-surface p-5 rounded-3xl border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-teal-500/20 transition-all duration-300 group">
                         <div class="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100 dark:border-gray-800">
                             <div class="w-10 h-10 rounded-xl bg-brand-lightPrimary/10 dark:bg-brand-darkPrimary/10 flex items-center justify-center text-brand-lightPrimary dark:text-brand-darkPrimary">
                                 <i class="fa-solid ${obj.icon || 'fa-star'}"></i>
@@ -416,16 +633,16 @@ function renderReport() {
     const html = `
         <!-- Theme colors as requested: White, Forest Green (#2f7041), Gold accents -->
         <!-- Header Box -->
-        <div class="bg-[#2f7041] rounded-3xl p-6 shadow-md text-center text-white relative overflow-hidden group">
+        <div class="bg-[#2f7041] rounded-3xl p-6 shadow-md text-center text-white relative overflow-hidden group content-fade-in">
             <div class="absolute -right-6 -top-6 text-white/10 text-8xl transform -rotate-12 transition-transform group-hover:rotate-0"><i class="fa-solid ${report.icon}"></i></div>
             <h1 class="text-3xl font-black mb-2 relative z-10">${report.mainTitle}</h1>
             <p class="text-sm font-semibold opacity-90 relative z-10">${report.subTitle}</p>
         </div>
 
         <!-- Info Grid (3 columns desktop, 1 mobile) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
             ${report.infoGrid.map(info => `
-                <div class="bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow stagger-item">
                     <i class="fa-solid ${info.icon} text-xl text-[#fbbf24] mb-2 drop-shadow-sm"></i>
                     <span class="text-[10px] text-gray-500 font-bold mb-1">${info.title}</span>
                     <span class="text-xs md:text-sm font-black text-[#2f7041] dark:text-[#4ade80]">${info.value}</span>
@@ -437,11 +654,11 @@ function renderReport() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             
             <!-- Goals (Right Column effectively due to RTL) -->
-            <div class="relative pt-4">
+            <div class="relative pt-4 stagger-slide-right">
                 <div class="absolute top-0 right-6 bg-[#fbbf24] text-[#2f7041] px-4 py-1 rounded-full text-xs font-black shadow-sm transform -translate-y-1/2">
                     ${report.goalsTitle}
                 </div>
-                <div class="bg-white dark:bg-dark-surface border-2 border-[#fbbf24]/30 rounded-3xl p-6 pt-8 shadow-sm h-full">
+                <div class="bg-white dark:bg-dark-surface border-2 border-[#fbbf24]/30 rounded-3xl p-6 pt-8 shadow-sm h-full hover-lift">
                     <ul class="flex flex-col gap-3">
                         ${report.goalsList.map(goal => `
                             <li class="flex items-start gap-3">
@@ -454,11 +671,11 @@ function renderReport() {
             </div>
 
             <!-- Procedures -->
-            <div class="relative pt-4">
+            <div class="relative pt-4 stagger-slide-right">
                 <div class="absolute top-0 right-6 bg-[#fbbf24] text-[#2f7041] px-4 py-1 rounded-full text-xs font-black shadow-sm transform -translate-y-1/2">
                     ${report.proceduresTitle}
                 </div>
-                <div class="bg-white dark:bg-dark-surface border-2 border-[#fbbf24]/30 rounded-3xl p-6 pt-8 shadow-sm h-full">
+                <div class="bg-white dark:bg-dark-surface border-2 border-[#fbbf24]/30 rounded-3xl p-6 pt-8 shadow-sm h-full hover-lift">
                     <ul class="flex flex-col gap-3">
                         ${report.proceduresList.map(proc => `
                             <li class="flex items-start gap-3">
@@ -474,13 +691,13 @@ function renderReport() {
 
         <!-- Evidence Images Banner & Grid -->
         <div class="mt-6 flex flex-col gap-4">
-            <div class="bg-[#2f7041] text-white rounded-2xl py-3 px-6 font-bold text-center shadow-md flex items-center justify-center gap-3">
+            <div class="bg-[#2f7041] text-white rounded-2xl py-3 px-6 font-bold text-center shadow-md flex items-center justify-center gap-3 stagger-item">
                 <i class="fa-solid fa-camera-retro text-[#fbbf24] text-xl"></i>
                 <span>شواهد الرصد</span>
             </div>
             
             ${report.evidenceImages.length === 0 ?
-            '<div class="text-center p-6 text-gray-400 font-bold bg-white dark:bg-dark-surface rounded-3xl border border-dashed border-gray-300 dark:border-gray-700">لا توجد شواهد مرفقة لهذا التقرير</div>'
+            '<div class="text-center p-6 text-gray-400 font-bold bg-white dark:bg-dark-surface rounded-3xl border border-dashed border-gray-300 dark:border-gray-700 stagger-item">لا توجد شواهد مرفقة لهذا التقرير</div>'
             :
             `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     ${report.evidenceImages.map(imgUrl => {
@@ -490,30 +707,28 @@ function renderReport() {
                     const match = imgUrl.match(/(?:\/d\/|id=|id%3D)([a-zA-Z0-9_-]{10,})/);
                     if (match && match[1]) {
                         const fileId = match[1];
-                        // Use multiple fallback URLs like renderHome does
-                        const url1 = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w800';
-                        const url2 = 'https://lh3.googleusercontent.com/d/' + fileId;
-                        const url3 = 'https://drive.google.com/uc?export=view&id=' + fileId;
-                        innerHtml = '<a href="' + imgUrl + '" target="_blank" class="block w-full h-72 md:h-80 relative group overflow-hidden bg-gray-50 dark:bg-dark-surface">' +
-                            '<img src="' + url1 + '" onerror="this.onerror=function(){this.onerror=function(){this.style.display=\'none\'; this.nextElementSibling.classList.remove(\'hidden\')};this.src=\'' + url3 + '\'};this.src=\'' + url2 + '\'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="شاهد">' +
-                            '<div class="hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-[#2f7041] hover:text-[#fbbf24] transition-colors text-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl m-2">' +
-                            '<i class="fa-brands fa-google-drive text-5xl mb-4 text-[#fbbf24]"></i>' +
-                            '<span class="font-bold text-sm">عرض شواهد جوجل درايف</span>' +
-                            '<span class="text-xs text-gray-400 mt-2">انقر للفتح في نافذة جديدة</span>' +
-                            '</div>' +
-                            '<div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg opacity-80 group-hover:opacity-100 transition-opacity">' +
+                        const thumbUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w800';
+                        const lh3Url = 'https://lh3.googleusercontent.com/d/' + fileId;
+                        const previewUrl = 'https://drive.google.com/file/d/' + fileId + '/preview';
+                        // Unique wrapper ID so the onerror handler can find the right container
+                        const wid = 'ev_' + fileId.slice(-6) + '_' + Math.random().toString(36).slice(2, 6);
+
+                        innerHtml =
+                            '<div id="' + wid + '" class="relative w-full" style="min-height:220px">' +
+                            '<img src="' + thumbUrl + '"' +
+                            ' class="w-full h-72 md:h-80 object-cover"' +
+                            ' alt="شاهد"' +
+                            ' onerror="driveImgError(this,\'' + lh3Url + '\',\'' + previewUrl + '\',\'' + wid + '\')">' +
+                            '<a href="' + imgUrl + '" target="_blank"' +
+                            ' class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg opacity-80 hover:bg-black/80 transition-opacity">' +
                             '<i class="fa-solid fa-expand"></i>' +
-                            '</div>' +
-                            '</a>';
+                            '</a>' +
+                            '</div>';
                     } else {
-                        // Fallback for unrecognized Drive URLs - open as iframe preview
-                        let previewUrl = imgUrl;
-                        if (previewUrl.includes('/view')) {
-                            previewUrl = previewUrl.replace(/\/view.*$/, '/preview');
-                        } else if (!previewUrl.includes('/preview')) {
-                            previewUrl += previewUrl.includes('?') ? '&usp=sharing' : '/preview';
-                        }
-                        innerHtml = '<a href="' + imgUrl + '" target="_blank" class="flex flex-col items-center justify-center p-8 h-72 md:h-80 text-[#2f7041] hover:text-[#fbbf24] transition-colors bg-gray-50 dark:bg-dark-surface"><i class="fa-brands fa-google-drive text-5xl mb-4"></i><span class="font-bold text-sm text-center">فتح المرفق في جوجل درايف</span></a>';
+                        // Unrecognized Drive URL pattern — iframe directly
+                        let embedUrl = imgUrl.replace(/\/view.*$/, '/preview').replace(/\/edit.*$/, '/preview');
+                        if (!embedUrl.includes('/preview')) embedUrl += '/preview';
+                        innerHtml = '<iframe src="' + embedUrl + '" class="w-full border-none" style="height:400px" allowfullscreen></iframe>';
                     }
                 } else if (imgUrl.match(/\.(jpeg|jpg|gif|png|webp|svg|bmp|tiff)(\?.*)?$/i)) {
                     // Direct image URL with known extension
@@ -530,7 +745,7 @@ function renderReport() {
                         '</a>';
                 }
 
-                return '<div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow bg-white dark:bg-dark-main relative">' +
+                return '<div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow bg-white dark:bg-dark-main relative stagger-scale-center">' +
                     innerHtml +
                     '</div>';
             }).join('')}
@@ -617,25 +832,25 @@ function renderNafes() {
         </div>
 
         <!-- Quick Stats Row (Dark Card) -->
-        <section class="bg-slate-900 dark:bg-dark-surface p-6 rounded-3xl shadow-lg border border-slate-800 text-white mt-4">
+        <section class="bg-slate-900 dark:bg-dark-surface p-6 rounded-3xl shadow-lg border border-slate-800 text-white mt-4 stagger-item">
             <div class="grid grid-cols-3 gap-4 text-center divide-x divide-x-reverse divide-slate-700">
                 <div class="flex flex-col gap-1">
-                    <span class="text-3xl font-black text-brand-darkPrimary" style="direction: ltr">${data.quickStats.modelsCount}</span>
+                    <span class="text-3xl font-black text-brand-darkPrimary counter-up" data-target="${data.quickStats.modelsCount}" style="direction: ltr">0</span>
                     <span class="text-xs font-bold text-slate-400">النماذج المحاكية</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-3xl font-black text-emerald-400" style="direction: ltr">${data.quickStats.improvement}</span>
+                    <span class="text-3xl font-black text-emerald-400 counter-up" data-target="${data.quickStats.improvement}" style="direction: ltr">0</span>
                     <span class="text-xs font-bold text-slate-400">نسبة التحسن</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="text-3xl font-black text-brand-secondary" style="direction: ltr">${data.quickStats.studentsCount}</span>
+                    <span class="text-3xl font-black text-brand-secondary counter-up" data-target="${data.quickStats.studentsCount}" style="direction: ltr">0</span>
                     <span class="text-xs font-bold text-slate-400">الطلاب المشاركون</span>
                 </div>
             </div>
         </section>
 
         <!-- Chart Section -->
-        <section class="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mt-2">
+        <section class="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mt-2 stagger-item">
             <h3 class="font-bold text-lg mb-4 flex gap-2 items-center text-slate-800 dark:text-gray-200">
                 <i class="fa-solid fa-chart-area text-brand-lightPrimary dark:text-brand-darkPrimary"></i> مؤشر الأداء العام
             </h3>
@@ -693,6 +908,40 @@ function renderNafes() {
 
     // Initialize Chart.js after DOM is updated
     setTimeout(() => {
+        // Animate Counters
+        const counters = document.querySelectorAll('.counter-up');
+        const speed = 200; // The lower the slower
+
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const targetStr = counter.getAttribute('data-target') || '0';
+                // Remove non-numeric characters (like % or +) to get the target number
+                const target = parseFloat(targetStr.replace(/[^0-9.]/g, '')) || 0;
+                // Currently displayed number
+                const countStr = counter.innerText;
+                const count = parseFloat(countStr.replace(/[^0-9.]/g, '')) || 0;
+
+                // Keep original prefix/suffix
+                const prefix = targetStr.startsWith('+') ? '+' : '';
+                const suffix = targetStr.endsWith('%') ? '%' : '';
+
+                // Lower inc to slow and higher to speed up
+                const inc = target / speed;
+
+                // Check if target is reached
+                if (count < target) {
+                    // Add inc to count and output in counter with formatting
+                    counter.innerText = prefix + Math.ceil(count + inc) + suffix;
+                    // Call function every ms
+                    setTimeout(updateCount, 10);
+                } else {
+                    counter.innerText = targetStr; // Ensure final exact string including %
+                }
+            };
+            updateCount();
+        });
+
+        // Setup Chart
         const ctx = document.getElementById('nafesChart');
         if (ctx) {
             const isDark = document.documentElement.classList.contains('dark');
@@ -719,6 +968,29 @@ function renderNafes() {
                     }]
                 },
                 options: {
+                    animation: {
+                        x: {
+                            type: 'number',
+                            easing: 'linear',
+                            duration: 1000,
+                            from: 0,
+                            delay(ctx) {
+                                if (ctx.type !== 'data' || ctx.xStarted) {
+                                    return 0;
+                                }
+                                ctx.xStarted = true;
+                                return ctx.index * 100;
+                            }
+                        },
+                        y: {
+                            type: 'number',
+                            easing: 'easeOutQuart',
+                            duration: 1000,
+                            from: (ctx) => {
+                                return ctx.chart.scales.y.getPixelForValue(0);
+                            },
+                        }
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
@@ -812,9 +1084,9 @@ function renderHonorRoll() {
         <!-- Top 3 Podium -->
         <div class="flex justify-center items-end gap-2 md:gap-4 mb-10 mt-10 px-0">
             <!-- 2nd Place -->
-            <div class="w-1/3 max-w-[140px] flex flex-col items-center group relative z-10">
+            <div class="w-1/3 max-w-[140px] flex flex-col items-center group relative z-0 stagger-item">
                 <div class="relative mb-2 flex justify-center w-full">
-                    <div class="absolute top-0 -right-2 md:right-0 w-7 h-7 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-black border-2 border-white dark:border-dark-main z-20 shadow-md">2</div>
+                    <div class="absolute top-0 -left-2 md:left-0 w-7 h-7 bg-gray-300 text-gray-800 rounded-full flex items-center justify-center text-sm font-black border-2 border-white dark:border-dark-main z-20 shadow-md">2</div>
                     ${(() => {
                 if (data[1].image && data[1].image.trim() !== '') {
                     const dm = data[1].image.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -824,14 +1096,15 @@ function renderHonorRoll() {
                 return `<div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-gray-200 to-gray-400 rounded-full flex items-center justify-center text-3xl text-white shadow-lg border-4 border-white dark:border-dark-main relative z-10 group-hover:-translate-y-2 transition-transform duration-300"><i class="fa-solid fa-user-graduate"></i></div>`;
             })()}
                 </div>
-                <div class="bg-gradient-to-t from-gray-200 to-gray-50 dark:from-gray-700 dark:to-gray-800 w-full rounded-t-2xl flex flex-col items-center justify-start pt-3 pb-2 shadow-inner min-h-[100px] border-t-4 border-gray-400 relative overflow-hidden">
+                <!-- Podium Base 2nd -->
+                <div class="bg-gradient-to-t from-gray-200 to-gray-50 dark:from-gray-700/50 dark:to-gray-800 w-full rounded-t-2xl flex flex-col items-center justify-start pt-3 pb-2 shadow-inner min-h-[100px] border-t-4 border-gray-400 relative overflow-hidden">
                     <h3 class="font-bold text-xs md:text-sm text-center px-1 mb-1 text-gray-800 dark:text-gray-200 relative z-10 line-clamp-2">${data[1].name}</h3>
                     <div class="text-gray-600 dark:text-gray-400 font-bold text-xs relative z-10" dir="ltr">${data[1].score}</div>
                 </div>
             </div>
 
             <!-- 1st Place (Center, Highest) -->
-            <div class="w-1/3 max-w-[160px] flex flex-col items-center z-20 group">
+            <div class="w-1/3 max-w-[160px] flex flex-col items-center z-20 group stagger-item">
                 <div class="relative mb-2 flex justify-center w-full">
                     <i class="fa-solid fa-crown absolute -top-8 left-1/2 transform -translate-x-1/2 text-yellow-400 text-4xl z-30 drop-shadow-lg animate-bounce"></i>
                     <div class="absolute top-0 -right-2 md:right-0 w-8 h-8 bg-yellow-400 text-yellow-900 rounded-full flex items-center justify-center text-sm font-black border-2 border-white dark:border-dark-main z-20 shadow-lg">1</div>
@@ -852,7 +1125,7 @@ function renderHonorRoll() {
             </div>
 
             <!-- 3rd Place -->
-            <div class="w-1/3 max-w-[140px] flex flex-col items-center group relative z-0">
+            <div class="w-1/3 max-w-[140px] flex flex-col items-center group relative z-0 stagger-item">
                 <div class="relative mb-2 flex justify-center w-full">
                     <div class="absolute top-0 -right-2 md:right-0 w-7 h-7 bg-orange-300 text-orange-900 rounded-full flex items-center justify-center text-sm font-black border-2 border-white dark:border-dark-main z-20 shadow-md">3</div>
                     ${(() => {
@@ -931,8 +1204,8 @@ function setupModals() {
         document.getElementById(modalId).classList.remove('hidden');
 
         setTimeout(() => {
-            modalOverlay.classList.remove('opacity-0');
-            modalOverlay.classList.add('opacity-100');
+            modalOverlay.classList.remove('opacity-0', 'backdrop-blur-none');
+            modalOverlay.classList.add('opacity-100', 'backdrop-blur-sm');
             const m = document.getElementById(modalId);
             m.classList.remove('scale-95', 'opacity-0');
             m.classList.add('scale-100', 'opacity-100');
@@ -941,11 +1214,14 @@ function setupModals() {
         if (modalId === 'contactModal' && appData && appData.contact) {
             populateContactLinks();
         }
+        if (modalId === 'personalInfoModal' && appData && appData.personalInfo) {
+            populatePersonalInfoModal();
+        }
     };
 
     const closeAllModals = () => {
-        modalOverlay.classList.remove('opacity-100');
-        modalOverlay.classList.add('opacity-0');
+        modalOverlay.classList.remove('opacity-100', 'backdrop-blur-sm');
+        modalOverlay.classList.add('opacity-0', 'backdrop-blur-none');
         document.querySelectorAll('#modalOverlay > div').forEach(m => {
             m.classList.remove('scale-100', 'opacity-100');
             m.classList.add('scale-95', 'opacity-0');
@@ -967,12 +1243,64 @@ function setupModals() {
         contactBtn.addEventListener('click', () => openModal('contactModal'));
     }
 
+    // Neon 'About Me' button — delegated event, since button is rendered dynamically
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.neon-about-btn');
+        if (btn) openModal('personalInfoModal');
+    });
+
     closeModals.forEach(btn => btn.addEventListener('click', closeAllModals));
 
     if (modalOverlay) {
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeAllModals();
         });
+    }
+}
+
+function populatePersonalInfoModal() {
+    const pi = appData.personalInfo;
+    if (!pi) return;
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+    set('pi_name', pi.name);
+    set('pi_job', pi.job);
+    set('pi_specialty', pi.specialty);
+    set('pi_stage', pi.stage);
+    set('pi_school', pi.school);
+    set('pi_phone', pi.phone ? '+' + pi.phone : '');
+    set('pi_email', pi.email);
+
+    // WhatsApp button — build URL with pre-filled Arabic greeting
+    const phoneNumber = (pi.phone && pi.phone.trim()) ? pi.phone.trim() : '966505775410';
+    const waMessage = 'مرحباً، يسعدني التواصل معك';
+    const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodeURIComponent(waMessage);
+    const waLink = document.getElementById('modal-wa-link');
+    if (waLink) {
+        waLink.href = waUrl;
+        set('pi_phone', '+' + phoneNumber);
+    }
+
+    // Email button
+    const emailLink = document.getElementById('pi_email_link');
+    if (emailLink && pi.email) emailLink.href = 'mailto:' + pi.email;
+
+    // Certificates section
+    const certsSection = document.getElementById('pi_certs_section');
+    const licBtn = document.getElementById('pi_license_btn');
+    const certBtn = document.getElementById('pi_cert_btn');
+    let hasAny = false;
+    if (licBtn) {
+        if (pi.licenseUrl && pi.licenseUrl.trim()) {
+            licBtn.href = pi.licenseUrl; licBtn.classList.remove('hidden'); hasAny = true;
+        } else { licBtn.classList.add('hidden'); }
+    }
+    if (certBtn) {
+        if (pi.certificateUrl && pi.certificateUrl.trim()) {
+            certBtn.href = pi.certificateUrl; certBtn.classList.remove('hidden'); hasAny = true;
+        } else { certBtn.classList.add('hidden'); }
+    }
+    if (certsSection) {
+        hasAny ? certsSection.classList.remove('hidden') : certsSection.classList.add('hidden');
     }
 }
 
@@ -1055,6 +1383,7 @@ function setupAdminPanel() {
             <button type="button" class="admin-tab-btn px-4 py-2 font-bold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors" data-target="admin-tab-math">المعمل</button>
             <button type="button" class="admin-tab-btn px-4 py-2 font-bold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors" data-target="admin-tab-nafes">نافس</button>
             <button type="button" class="admin-tab-btn px-4 py-2 font-bold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors" data-target="admin-tab-honor">لوحة الشرف</button>
+            <button type="button" class="admin-tab-btn px-4 py-2 font-bold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors whitespace-nowrap" data-target="admin-tab-personal">نبذة عني</button>
         </div>
         `;
 
@@ -1298,6 +1627,53 @@ function setupAdminPanel() {
         }
         html += `</div>`;
 
+        // 5. Personal Info (نبذة عني)
+        const pi = appData.personalInfo || {};
+        html += `<div id="admin-tab-personal" class="admin-tab-content hidden p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700 mt-4 animate-fadeIn">`;
+        html += `<h3 class="font-bold text-lg mb-4 text-brand-lightPrimary dark:text-brand-darkPrimary"><i class="fa-solid fa-user-tie ml-2"></i>البيانات الشخصية (نبذة عني)</h3>`;
+        html += `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="block text-sm font-bold mb-1">الاسم الكامل</label>
+                    <input type="text" id="pi_admin_name" value="${pi.name || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">المسمى الوظيفي</label>
+                    <input type="text" id="pi_admin_job" value="${pi.job || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">التخصص</label>
+                    <input type="text" id="pi_admin_specialty" value="${pi.specialty || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">المرحلة الدراسية</label>
+                    <input type="text" id="pi_admin_stage" value="${pi.stage || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold mb-1">المدرسة</label>
+                    <input type="text" id="pi_admin_school" value="${pi.school || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">رقم الهاتف (واتساب)</label>
+                    <input type="text" id="pi_admin_phone" value="${pi.phone || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary" dir="ltr" placeholder="966xxxxxxxxx">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">البريد الإلكتروني</label>
+                    <input type="text" id="pi_admin_email" value="${pi.email || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary" dir="ltr">
+                </div>
+            </div>
+            <h4 class="font-bold text-sm mb-2 text-brand-secondary mt-2"><i class="fa-solid fa-certificate ml-1"></i> الشهادات والرخص (اختياري)</h4>
+            <div class="mb-2">
+                <label class="block text-sm font-bold mb-1">رابط رخصة المعلم (Google Drive)</label>
+                <input type="text" id="pi_admin_license" value="${pi.licenseUrl || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary" dir="ltr" placeholder="https://drive.google.com/...">
+            </div>
+            <div class="mb-2">
+                <label class="block text-sm font-bold mb-1">رابط الشهادة العلمية (Google Drive)</label>
+                <input type="text" id="pi_admin_cert" value="${pi.certificateUrl || ''}" class="w-full bg-white dark:bg-dark-main border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-lightPrimary" dir="ltr" placeholder="https://drive.google.com/...">
+            </div>
+        `;
+        html += `</div>`;
+
         visualEditorArea.innerHTML = html;
 
         // Attach Tab listeners
@@ -1473,6 +1849,18 @@ function setupAdminPanel() {
                 if (imageInp) student.image = imageInp.value;
             });
         }
+
+        // 5. Personal Info (نبذة عني)
+        const piFields = ['name', 'job', 'specialty', 'stage', 'school', 'phone', 'email'];
+        if (!newData.personalInfo) newData.personalInfo = {};
+        piFields.forEach(field => {
+            const inp = document.getElementById(`pi_admin_${field}`);
+            if (inp) newData.personalInfo[field] = inp.value;
+        });
+        const licInp = document.getElementById('pi_admin_license');
+        const certInp = document.getElementById('pi_admin_cert');
+        if (licInp) newData.personalInfo.licenseUrl = licInp.value;
+        if (certInp) newData.personalInfo.certificateUrl = certInp.value;
 
         return newData;
     }
